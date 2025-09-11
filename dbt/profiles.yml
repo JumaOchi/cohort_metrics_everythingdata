@@ -1,0 +1,12 @@
+cohort_metrics:
+  outputs:
+    dev:
+      type: postgres
+      host: "{{ env_var('SUPABASE_DB_HOST') }}"
+      user: "{{ env_var('SUPABASE_DB_USER') }}"
+      password: "{{ env_var('SUPABASE_DB_PASSWORD') }}"
+      port: "{{ env_var('SUPABASE_DB_PORT', 5432) }}"
+      dbname: "{{ env_var('SUPABASE_DB_NAME') }}"
+      schema: analytics
+      threads: 1
+  target: dev

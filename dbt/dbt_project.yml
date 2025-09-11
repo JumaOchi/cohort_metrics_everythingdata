@@ -1,0 +1,7 @@
+
+name: cohort_metrics
+version: '1.0'
+config-version: 2
+profile: cohort_metrics
+model-paths: ["models"]
+target-path: "target"
