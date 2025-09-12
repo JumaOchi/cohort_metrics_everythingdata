@@ -5,7 +5,7 @@ cohort_metrics:
       host: "{{ env_var('SUPABASE_DB_HOST') }}"
       user: "{{ env_var('SUPABASE_DB_USER') }}"
       password: "{{ env_var('SUPABASE_DB_PASSWORD') }}"
-      port: "{{ env_var('SUPABASE_DB_PORT', 5432) }}"
+      port: "{{ env_var('SUPABASE_DB_PORT') | int }}"
       dbname: "{{ env_var('SUPABASE_DB_NAME') }}"
       schema: analytics
       threads: 1

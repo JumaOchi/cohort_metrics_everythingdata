@@ -1,0 +1,26 @@
+version: 2
+
+models:
+  - name: mart_total_intake_summary
+    description: "Aggregated summary of applicants by track, age, gender, and country."
+    columns:
+      - name: track_type
+        description: "Track applied for"
+      - name: total_applicants
+        description: "Number of applicants"
+      - name: avg_score
+        description: "Average test score"
+      - name: completion_rate
+        description: "Graduation/completion rate"
+
+  - name: mart_recruitment_effectiveness
+    description: "Marketing effectiveness metrics (referrals, ROI by source, demographics)."
+    columns:
+      - name: referral_source
+        description: "Channel of referral (word of mouth, social media, etc.)"
+      - name: applicant_count
+        description: "Total applicants from this source"
+      - name: avg_score
+        description: "Average performance of applicants from this source"
+      - name: graduation_rate
+        description: "Graduation rate of applicants from this referral source"

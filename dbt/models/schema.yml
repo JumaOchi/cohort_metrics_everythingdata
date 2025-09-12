@@ -1,0 +1,25 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: raw
+    tables:
+      - name: raw_datascience_intake
+      - name: raw_dataanalyst_intake
+
+models:
+  - name: stg_datascience_intake
+    tests:
+      - not_null:
+          column_name: id_no
+      - not_null:
+          column_name: submitted_at
+
+  - name: stg_dataanalyst_intake
+    tests:
+      - not_null:
+          column_name: id_no
+      - not_null:
+          column_name: submitted_at
+
+

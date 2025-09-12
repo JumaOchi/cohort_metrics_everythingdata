@@ -1,0 +1,50 @@
+version: 2
+
+models:
+  - name: dim_applicant_demographics
+    description: "Dimension table with applicant demographic attributes like age, gender, and country."
+    columns:
+      - name: id_no
+        description: "Unique applicant ID"
+        tests:
+          - not_null
+          - unique
+      - name: age_range
+        description: "Self-reported age range"
+      - name: gender
+        description: "Self-reported gender"
+      - name: country
+        description: "Country of origin"
+
+  - name: fact_application_details
+    description: "Fact table containing application details, demographic breakdowns, and intake info."
+    columns:
+      - name: id_no
+        description: "Applicant ID linked to demographics"
+        tests:
+          - not_null
+      - name: track
+        description: "Track applied for (data analyst / data science)"
+      - name: referral_source
+        description: "How applicant heard about EverythingData"
+
+  - name: fact_performance_metrics
+    description: "Fact table storing applicant performance and graduation outcomes."
+    columns:
+      - name: id_no
+        tests:
+          - not_null
+      - name: total_score
+        description: "Final test score"
+      - name: graduated
+        description: "Graduation status (true/false)"
+
+  - name: unified_intake
+    description: "Unified view of all intake data across tracks with a new column track_type."
+    columns:
+      - name: id_no
+        tests:
+          - not_null
+          - unique
+      - name: track_type
+        description: "Track type (data science / data analyst)"

@@ -1,0 +1,27 @@
+
+  
+    
+
+  create  table "postgres"."analytics"."fact_performance_metrics__dbt_tmp"
+  
+  
+    as
+  
+  (
+    
+
+with base as (
+    select * from "postgres"."analytics"."stg_datascience_intake"
+    union all
+    select * from "postgres"."analytics"."stg_dataanalyst_intake"
+)
+
+select
+    id_no,
+    track,
+    total_score,
+    graduated,
+    case when graduated = true then 1 else 0 end as graduation_flag
+from base
+  );
+  
