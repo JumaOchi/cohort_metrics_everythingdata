@@ -1,5 +1,6 @@
 # Hiding env variables
 
-
+/logs
 .env
 /myenv
+/dbt/logs

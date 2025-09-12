@@ -55,8 +55,7 @@ COLUMN_MAP = {
 
 
 CREATE_TABLE_SQL = """
-DROP TABLE IF EXISTS {table_name};
-CREATE TABLE IF NOT EXISTS {table_name} (
+CREATE TABLE IF NOT EXISTS raw.{table_name} (
     timestamp TIMESTAMPTZ,
     id_no TEXT PRIMARY KEY,
     age_range TEXT,
@@ -77,9 +76,15 @@ CREATE TABLE IF NOT EXISTS {table_name} (
 
 def ensure_table_exists(conn, table_name):
     with conn.cursor() as cur:
+        # make sure raw schema exists
+        cur.execute("CREATE SCHEMA IF NOT EXISTS raw;")
+
+        # create the raw.{table_name}
         cur.execute(CREATE_TABLE_SQL.format(table_name=table_name))
+
     conn.commit()
-    print(f"table {table_name} ready")
+    print(f"table raw.{table_name} ready")
+
 
 def upsert_excel_sheet_to_table(file_path, sheet_name, table_name, conn):
     df = pd.read_excel(file_path, sheet_name=sheet_name)
@@ -99,7 +104,7 @@ def upsert_excel_sheet_to_table(file_path, sheet_name, table_name, conn):
 
     with conn.cursor() as cur:
         query = f"""
-        INSERT INTO {table_name} ({",".join(COLUMNS)})
+        INSERT INTO raw.{table_name} ({",".join(COLUMNS)})
         VALUES ({",".join(["%s"] * len(COLUMNS))})
         ON CONFLICT (id_no) DO UPDATE SET
           {",".join([f"{col}=EXCLUDED.{col}" for col in COLUMNS if col != "id_no"])};
@@ -109,7 +114,7 @@ def upsert_excel_sheet_to_table(file_path, sheet_name, table_name, conn):
         execute_batch(cur, query, values, page_size=100)
 
     conn.commit()
-    print(f"Upserted {len(rows)} rows into {table_name}")
+    print(f"Upserted {len(rows)} rows into raw.{table_name}")
 
 def main():
     conn = psycopg2.connect(db_url)
