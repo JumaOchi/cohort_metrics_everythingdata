@@ -4,3 +4,4 @@
 .env
 /myenv
 /dbt/logs
+/airflow_data

@@ -1,110 +1,36 @@
-
+# docker-compose.yml
 services:
   postgres:
-    image: postgres:15
-    container_name: elt-postgres
+    image: postgres:13
+    container_name: airflow_postgres
     environment:
-      POSTGRES_USER: dev
-      POSTGRES_PASSWORD: dev
-      POSTGRES_DB: analytics
+      - POSTGRES_USER=airflow
+      - POSTGRES_PASSWORD=airflow
+      - POSTGRES_DB=airflow
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U dev -d analytics"]
-      interval: 10s
-      retries: 5
-      start_period: 30s
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 1G
-        reservations:
-          cpus: '0.25'
-          memory: 512M
+    restart: always
 
-  airflow-init:
-    image: apache/airflow:2.9.0
-    container_name: elt-airflow-init
-    entrypoint: /bin/bash
-    command:
-      - -c
-      - |
-        airflow db init &&
-        airflow users create \
-          --username admin \
-          --firstname Airflow \
-          --lastname Admin \
-          --role Admin \
-          --email admin@example.com \
-          --password admin
+  airflow:
+    build:
+      context: .
+      dockerfile: airflow.Dockerfile
+    container_name: airflow
+    depends_on:
+      - postgres
     environment:
-      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://dev:dev@postgres:5432/analytics
-      - AIRFLOW__CORE__FERNET_KEY=${FERNET_KEY}
       - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
     volumes:
       - ./dags:/opt/airflow/dags
-    depends_on:
-      postgres:
-        condition: service_healthy
-    restart: "no"
-
-  airflow-webserver:
-    image: apache/airflow:2.9.0
-    container_name: elt-airflow-webserver
-    depends_on:
-      postgres:
-        condition: service_healthy
-      airflow-init:
-        condition: service_completed_successfully
-    environment:
-      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://dev:dev@postgres:5432/analytics
-      AIRFLOW__CORE__FERNET_KEY: ${FERNET_KEY}
-      AIRFLOW__CORE__EXECUTOR: LocalExecutor
-      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "True"
-      AIRFLOW__CORE__LOAD_EXAMPLES: "False"
-      GUNICORN_CMD_ARGS: "--workers 1 --timeout 120 --worker-class sync"
-    volumes:
-      - ./dags:/opt/airflow/dags
+      - ./dbt:/opt/airflow/dbt
+      - ./airflow_data:/opt/airflow        # persist db + configs
+      - ./logs:/opt/airflow/logs           # persist logs separately
+      - ./.env:/opt/airflow/.env:ro        # env vars inside container
       - ./scripts:/opt/airflow/scripts
-    ports:
-      - "8080:8080"
-    command: >
-      bash -c "exec airflow webserver"
-    deploy:
-      resources:
-        limits:
-          cpus: "0.75"
-          memory: 1.5G
-        reservations:
-          cpus: "0.25"
-          memory: 512M
-
-
-  airflow-scheduler:
-    image: apache/airflow:2.9.0
-    container_name: elt-airflow-scheduler
-    depends_on:
-      postgres:
-        condition: service_healthy
-      airflow-init:
-        condition: service_completed_successfully
-    environment:
-      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://dev:dev@postgres:5432/analytics
-      - AIRFLOW__CORE__FERNET_KEY=${FERNET_KEY}
-      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
-    volumes:
-      - ./dags:/opt/airflow/dags
-    command: >
-      bash -c "exec airflow scheduler"
-    deploy:
-      resources:
-        limits:
-          cpus: '0.75'
-          memory: 1G
-        reservations:
-          cpus: '0.25'
-          memory: 512M
+    command: bash -c "airflow db init && airflow scheduler"  # command: bash -c "airflow db upgrade && airflow scheduler"
+    restart: always
 
 volumes:
   postgres_data:
