@@ -118,7 +118,9 @@ def upsert_excel_sheet_to_table(file_path, sheet_name, table_name, conn):
 
 def main():
     conn = psycopg2.connect(db_url)
-    excel_file = "data/Cohort_4_Capstone_Dataset.xlsx"
+
+    BASE_DIR = os.getenv("AIRFLOW_HOME", "/opt/airflow")  # resolves to /opt/airflow inside container
+    excel_file = os.path.join(BASE_DIR, "source", "Cohort_4_Capstone_Dataset.xlsx")
 
     for sheet, table_name in SHEETS_AND_TABLES.items():
         ensure_table_exists(conn, table_name)

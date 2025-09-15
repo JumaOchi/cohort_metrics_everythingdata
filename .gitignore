@@ -5,3 +5,4 @@
 /myenv
 /dbt/logs
 /airflow_data
+/dags/__pycache__

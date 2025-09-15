@@ -13,7 +13,7 @@
 
 
 select id_no
-from "postgres"."analytics"."dim_applicant_demographics"
+from "postgres"."analytics"."stg_dataanalyst_intake"
 where id_no is null
 
 

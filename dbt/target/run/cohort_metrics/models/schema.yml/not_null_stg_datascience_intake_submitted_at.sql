@@ -12,9 +12,9 @@
 
 
 
-select id_no
-from "postgres"."analytics"."dim_applicant_demographics"
-where id_no is null
+select submitted_at
+from "postgres"."analytics"."stg_datascience_intake"
+where submitted_at is null
 
 
 
