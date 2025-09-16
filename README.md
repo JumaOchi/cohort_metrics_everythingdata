@@ -1,6 +1,9 @@
 
 # Modular ELT Pipeline with Supabase & Power BI
 
+## Dashboard Preview
+![Recruitment Dashboard Preview](source/image.png)
+
 ## Overview
 
 This project implements a modular **ELT (Extract → Load → Transform)** pipeline for analytical workloads.
