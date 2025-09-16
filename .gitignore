@@ -5,3 +5,4 @@
 /myenv
 /dbt/logs
 /dags/__pycache__
+/dbt/target
