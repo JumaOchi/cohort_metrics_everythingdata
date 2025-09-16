@@ -20,7 +20,7 @@ with DAG(
     dag_id="elt_dbt_pipeline",
     default_args=default_args,
     description="Load Excel -> Supabase, then run dbt (run + test)",
-    schedule_interval="@daily",   # change to "*/5 * * * *" for 5-min demo runs
+    schedule_interval="@daily",   # change to "*/2 * * * *" for 2-min demo runs
     start_date=datetime(2025, 9, 11),
     catchup=False,
 ) as dag:
@@ -43,5 +43,5 @@ with DAG(
         env=env_vars,
     )
 
-    # Set execution order
+    #  execution order
     load_data >> dbt_run >> dbt_test
