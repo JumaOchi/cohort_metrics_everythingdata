@@ -75,7 +75,7 @@ The pipeline is **containerized with Docker** and **orchestrated via Apache Airf
 ```bash
 .
 ├── dags/                # Airflow DAG definitions (elt_dbt_pipeline)
-├── extract/             # Python scripts for Excel ingestion
+├── script/              # Python scripts for Excel ingestion
 ├── dbt/                 # dbt models (staging + analytics)
 ├── docker-compose.yml   # Docker services (Airflow, dbt, Postgres)
 ├── requirements.txt     # Python dependencies
