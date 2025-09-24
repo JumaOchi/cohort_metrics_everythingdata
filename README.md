@@ -89,8 +89,8 @@ The pipeline is **containerized with Docker** and **orchestrated via Apache Airf
 ### 1. Clone Repo
 
 ```bash
-git clone https://github.com/your-username/elt-pipeline.git
-cd elt-pipeline
+git clone https://github.com/JumaOchi/cohort_metrics_everythingdata.git
+cd cohort_metrics_everythingdata
 ```
 
 ### 2. Environment Variables
